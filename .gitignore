@@ -1,0 +1,8 @@
+.nfs*
+*~
+\#*\#
+partA/partA
+partB/partB
+partC/partC
+*/obj
+*/*.dSYM
