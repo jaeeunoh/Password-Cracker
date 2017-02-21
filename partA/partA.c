@@ -8,8 +8,11 @@
 
 int md5_string_to_bytes(const char* md5_string, uint8_t* bytes);
 void print_md5_bytes(const uint8_t* bytes);
+char* generate_plain_text();
 
 int main(int argc, char** argv) {
+  char text[8] = {'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a'};
+
   if(argc != 2) {
     fprintf(stderr, "Usage: %s <md5 sum of 8 character password>\n", argv[0]);
     exit(1);
@@ -44,6 +47,21 @@ int main(int argc, char** argv) {
   }
 
   return 0;
+}
+
+//Generate the string associated with a given integer. 
+void generate_plain_text(int number, char* text) {
+  int slot = number;
+  for(int i = 0; i < 8; i++){
+    
+    text[i] = (char) (97 + slot % 26);
+    slot = slot / 26;
+  }
+  for(int j = 0; j < 8; j++){
+    printf("%c", text[j]);
+  }printf("\n");
+   
+  return text;
 }
 
 /**
