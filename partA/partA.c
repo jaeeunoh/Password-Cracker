@@ -5,14 +5,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdbool.h>
 
 int md5_string_to_bytes(const char* md5_string, uint8_t* bytes);
 void print_md5_bytes(const uint8_t* bytes);
-char* generate_plain_text();
+void generate_plain_text();
+bool compare(char x[], char y[], int size);
 
 int main(int argc, char** argv) {
   char text[8] = {'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a'};
-
+  char completed[8] = {'z', 'z', 'z', 'z', 'z', 'z', 'z', 'z'};   
   if(argc != 2) {
     fprintf(stderr, "Usage: %s <md5 sum of 8 character password>\n", argv[0]);
     exit(1);
@@ -23,11 +25,15 @@ int main(int argc, char** argv) {
   
   // Convert the string representation of the MD5 hash to a byte array
   md5_string_to_bytes(argv[1], input_ciphertext);
-  
-  // Now compute the MD5 hash of the string "password"
-  char* plaintext = "password";
+
   uint8_t password_ciphertext[MD5_DIGEST_LENGTH];
-  MD5((unsigned char*)plaintext, strlen(plaintext), password_ciphertext);
+
+  int counter = 0; 
+  // Now compute the MD5 hash of the string "password"
+  while (memcmp(text, completed, 8) != 0) {
+  MD5((unsigned char*)text, strlen(text), password_ciphertext);
+  generate_plain_text(counter++, text);
+  } 
 
   // Print the hash that was passed in as a command line argument
   printf("You passed in the hash ");
@@ -48,20 +54,17 @@ int main(int argc, char** argv) {
 
   return 0;
 }
+ 
 
 //Generate the string associated with a given integer. 
-void generate_plain_text(int number, char* text) {
+void generate_plain_text(int number, char text[]) {
   int slot = number;
   for(int i = 0; i < 8; i++){
     
     text[i] = (char) (97 + slot % 26);
     slot = slot / 26;
   }
-  for(int j = 0; j < 8; j++){
-    printf("%c", text[j]);
-  }printf("\n");
-   
-  return text;
+  return;
 }
 
 /**
