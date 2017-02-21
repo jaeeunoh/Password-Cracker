@@ -1,4 +1,4 @@
-#include <assert.h>
+#define _GNU_SOURCE
 #include <openssl/md5.h>
 #include <stdint.h>
 #include <stdio.h>
