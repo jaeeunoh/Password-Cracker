@@ -13,10 +13,10 @@ void generate_plain_text();
 bool compare(char x[], char y[], int size);
 
 int main(int argc, char** argv) {
-  char text[8] = {'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a'};
-  char completed[8] = {'z', 'z', 'z', 'z', 'z', 'z', 'z', 'z'};   
+  char text[6] = {'a', 'a', 'a', 'a', 'a', 'a'};
+  char completed[6] = {'z', 'z', 'z', 'z', 'z', 'z'};   
   if(argc != 2) {
-    fprintf(stderr, "Usage: %s <md5 sum of 8 character password>\n", argv[0]);
+    fprintf(stderr, "Usage: %s <md5 sum of 6 character password>\n", argv[0]);
     exit(1);
   }
   
@@ -30,9 +30,16 @@ int main(int argc, char** argv) {
 
   int counter = 0; 
   // Now compute the MD5 hash of the string "password"
-  while (memcmp(text, completed, 8) != 0) {
-  MD5((unsigned char*)text, strlen(text), password_ciphertext);
-  generate_plain_text(counter++, text);
+  while (memcmp(text, completed, 6) != 0) {
+    MD5((unsigned char*)text, strlen(text), password_ciphertext);
+    generate_plain_text(counter++, text);
+    // Check if the two hashes are equal
+    if(memcmp(input_ciphertext, password_ciphertext, MD5_DIGEST_LENGTH) == 0) {
+      printf("Those two hashes are equal!\n");
+      break;
+    } else {
+      printf("Those hashes are not equal.\n");
+    }
   } 
 
   // Print the hash that was passed in as a command line argument
@@ -44,13 +51,6 @@ int main(int argc, char** argv) {
   printf("The MD5 hash of \"password\" is ");
   print_md5_bytes(password_ciphertext);
   printf("\n");
-  
-  // Check if the two hashes are equal
-  if(memcmp(input_ciphertext, password_ciphertext, MD5_DIGEST_LENGTH) == 0) {
-    printf("Those two hashes are equal!\n");
-  } else {
-    printf("Those hashes are not equal.\n");
-  }
 
   return 0;
 }
@@ -59,11 +59,17 @@ int main(int argc, char** argv) {
 //Generate the string associated with a given integer. 
 void generate_plain_text(int number, char text[]) {
   int slot = number;
-  for(int i = 0; i < 8; i++){
-    
+  int i = 0;
+  //for(int i = 0; i < 6; i++){
+  while(slot != 0){
     text[i] = (char) (97 + slot % 26);
     slot = slot / 26;
+    i++;
   }
+  for(int j = 0; j < 6; j++){
+    printf("%c", text[j]);
+  }
+  printf("\n");
   return;
 }
 
