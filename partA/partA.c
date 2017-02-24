@@ -6,6 +6,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <math.h>
 
 #define PASSWORD_LENGTH 6
 
@@ -32,18 +33,20 @@ int main(int argc, char** argv) {
   char* plaintext = "passwd";
   uint8_t password_ciphertext[MD5_DIGEST_LENGTH];
 
-  int counter = 0; 
+  int counter = 0;
+  int max = pow(26, 6);
   // Now compute the MD5 hash of the string "password"
-  while (memcmp(text, completed, 6) != 0) {
+  while (counter < max) {
     MD5((unsigned char*)text, strlen(text), password_ciphertext);
     generate_plain_text(counter++, text);
     // Check if the two hashes are equal
     if(memcmp(input_ciphertext, password_ciphertext, MD5_DIGEST_LENGTH) == 0) {
       printf("Those two hashes are equal!\n");
       break;
-    } else {
-      printf("Those hashes are not equal.\n");
     }
+    //else {
+    //  printf("Those hashes are not equal.\n");
+    //}
   } 
 
   // Print the hash that was passed in as a command line argument
@@ -70,10 +73,6 @@ void generate_plain_text(int number, char text[]) {
     slot = slot / 26;
     i++;
   }
-  for(int j = 0; j < 6; j++){
-    printf("%c", text[j]);
-  }
-  printf("\n");
   return;
 }
 
