@@ -17,7 +17,6 @@ bool compare(char x[], char y[], int size);
 
 int main(int argc, char** argv) {
   char text[6] = {'a', 'a', 'a', 'a', 'a', 'a'};
-  char completed[6] = {'z', 'z', 'z', 'z', 'z', 'z'};   
   if(argc != 2) {
     fprintf(stderr, "Usage: %s <md5 sum of %d character password>\n", argv[0], PASSWORD_LENGTH);
     exit(1);
