@@ -7,6 +7,8 @@
 #include <unistd.h>
 #include <stdbool.h>
 
+#define PASSWORD_LENGTH 6
+
 int md5_string_to_bytes(const char* md5_string, uint8_t* bytes);
 void print_md5_bytes(const uint8_t* bytes);
 void generate_plain_text();
@@ -16,7 +18,7 @@ int main(int argc, char** argv) {
   char text[6] = {'a', 'a', 'a', 'a', 'a', 'a'};
   char completed[6] = {'z', 'z', 'z', 'z', 'z', 'z'};   
   if(argc != 2) {
-    fprintf(stderr, "Usage: %s <md5 sum of 6 character password>\n", argv[0]);
+    fprintf(stderr, "Usage: %s <md5 sum of %d character password>\n", argv[0], PASSWORD_LENGTH);
     exit(1);
   }
   
@@ -25,7 +27,9 @@ int main(int argc, char** argv) {
   
   // Convert the string representation of the MD5 hash to a byte array
   md5_string_to_bytes(argv[1], input_ciphertext);
-
+  
+  // Now compute the MD5 hash of "passwd" (you should change this if you change PASSWORD_LENGTH)
+  char* plaintext = "passwd";
   uint8_t password_ciphertext[MD5_DIGEST_LENGTH];
 
   int counter = 0; 
@@ -48,7 +52,7 @@ int main(int argc, char** argv) {
   printf("\n");
   
   // Print the hash of "password"
-  printf("The MD5 hash of \"password\" is ");
+  printf("The MD5 hash of \"%s\" is ", plaintext);
   print_md5_bytes(password_ciphertext);
   printf("\n");
 

@@ -8,7 +8,7 @@
 #include <unistd.h>
 
 #define MAX_USERNAME_LENGTH 24
-#define PASSWORD_LENGTH 8
+#define PASSWORD_LENGTH 6
 
 typedef struct password_entry {
   char username[MAX_USERNAME_LENGTH+1];
