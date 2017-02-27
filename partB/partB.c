@@ -47,11 +47,10 @@ int main(int argc, char** argv) {
     while(current != NULL && !current->cracked) {
       if (memcmp(current->password_md5, password_ciphertext, MD5_DIGEST_LENGTH) == 0) {
         current->cracked = 0;
-        printf ("Password for "); 
         for (int j = 0; j < MAX_USERNAME_LENGTH+1; j++) {
           printf ("%c", current->username[j]);
         }
-        printf (" is "); 
+        printf (" "); 
         for (int i = 0; i < 6; i++) {
           printf ("%c", text[i]);
         }

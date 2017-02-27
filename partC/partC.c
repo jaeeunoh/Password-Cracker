@@ -17,6 +17,7 @@ typedef struct password_entry {
   uint8_t password_md5[MD5_DIGEST_LENGTH+1];
   bool cracked;
   struct password_entry* next;
+  struct password_entry* previous;  
 } password_entry_t;
 
 password_entry_t* read_password_file(const char* filename);
@@ -35,7 +36,6 @@ typedef struct thread_args {
 typedef struct thread_result {
   int result;
 } thread_result_t;
-
 
 
 int main(int argc, char** argv) {
@@ -131,32 +131,36 @@ int main(int argc, char** argv) {
 
 
 void* find_passwords(void* args){
-  char text[6] = {'a', 'a', 'a', 'a', 'a', 'a'};  
+  char text[6] = {'a', 'a', 'a', 'a', 'a', 'a'}; 
   uint8_t password_ciphertext[MD5_DIGEST_LENGTH];
-  // DOES HARD CAST HAPPEN BEFORE ARROW?????
   int counter = ((thread_args_t*) args)->start;
   int max = counter + (pow(26, 6)/4);
-  // Now compute the MD5 hash of the string "password"
+  // Now compute the MD5 hash
   while (counter < max) {
     MD5((unsigned char*)text, strlen(text), password_ciphertext);
     // Check if the two hashes are equal
-
-
     password_entry_t* current = ((thread_args_t*) args)->entry;
     while(current != NULL && !current->cracked) {
       if (memcmp(current->password_md5, password_ciphertext, MD5_DIGEST_LENGTH) == 0) {
-        current->cracked = 0;
-        printf ("Password for "); 
+        current->cracked = 0; 
         for (int j = 0; j < MAX_USERNAME_LENGTH+1; j++) {
           printf ("%c", current->username[j]);
         }
-        printf (" is "); 
+        printf (" "); 
         for (int i = 0; i < 6; i++) {
           printf ("%c", text[i]);
         }
-        printf ("\n"); 
+        printf ("\n");
+        password_entry_t* holder = current->next;
+        if(holder != NULL){
+          holder->previous = current->previous;
+        }
+        if(current->previous != NULL){
+          current->previous->next = holder;
+        }
+        current = holder;
       }
-      current = current->next;
+      else{current = current->next;}
     }
     generate_plain_text(counter++, text);
   }
@@ -217,6 +221,8 @@ password_entry_t* read_password_file(const char* filename) {
     
     // Add the new node to the front of the list
     newnode->next = list;
+    if(list != NULL){list->previous = newnode;}
+    newnode->previous = NULL;
     list = newnode;
   }
   
